@@ -17,7 +17,7 @@ export class EvalCommand extends Command {
     public async messageRun(message: Message, args: Args) {
         const code = await args.rest('string');
 
-        const { success, result, time } = await this.eval(code, args);
+        const { success, result, time } = await this.eval(message, code, args);
 
         if (args.getFlags('silent')) {
             await message.react(success ? '✅' : '❌').catch(() => null);
@@ -35,7 +35,7 @@ export class EvalCommand extends Command {
         return reply(message, `${header}${body}`);
     }
 
-    private async eval(code: string, args: Args): Promise<EvalResults> {
+    private async eval(message: Message, code: string, args: Args): Promise<EvalResults> {
         if (args.getFlags('async')) code = `(async () => {\n${code}\n})();`;
 
         const stopwatch = new Stopwatch();
@@ -68,7 +68,7 @@ export class EvalCommand extends Command {
         if (typeof result !== 'string') {
             result = 
                 result instanceof Error
-                    ? result.stack
+                    ? result.toString()
                     : args.getFlags('json')
                         ? JSON.stringify(result, null, 4)
                         : inspect(result, {
