@@ -3,4 +3,5 @@ src/generated/
 dist/
 
 .env
+database.sqlite
 
