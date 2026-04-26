@@ -16,9 +16,7 @@ export class MessageListener extends Listener {
         if (!message.channel.isSendable()) return;
         if (timeouts.has(message.author.id)) return;
 
-        // reward xp based on a fifth of the message length.
-        const xp = Math.max(Math.floor(message.content.length / 5), 20);
-        if (xp <= 0) return;
+        const xp = Math.floor(Math.random() * 5) + 1;
         
         const user = await prisma.user.upsert({
             where: { id: message.author.id },
