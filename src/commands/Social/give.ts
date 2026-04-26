@@ -1,7 +1,7 @@
 import { prisma } from '#lib/prisma';
 import { formatMoney } from '#lib/utils/money';
 import { ApplyOptions } from '@sapphire/decorators';
-import { Args, Command, type Awaitable, type MessageCommand } from '@sapphire/framework';
+import { Args, Command } from '@sapphire/framework';
 import { reply } from '@sapphire/plugin-editable-commands';
 import type { Message } from 'discord.js';
 
