@@ -5,7 +5,7 @@ import type { ChatInputCommandInteraction, Message } from 'discord.js';
 
 export class LeaderboardCommand extends Command {
     public async messageRun(message: Message, args: Args) {
-        const type = await args.pick('string');
+        const type = await args.pick('string').catch(() => 'xp');
         const lb = type === 'money' ? await createMoneyLeaderboard(message.author) : await createXPLeaderboard(message.author);
 
         await reply(message, lb);

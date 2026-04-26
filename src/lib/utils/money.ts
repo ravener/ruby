@@ -1,4 +1,4 @@
-import { bold } from "discord.js";
+import { bold } from 'discord.js';
 
 export function formatMoney(amount: number) {
     // if negative, put the - sign before the $
