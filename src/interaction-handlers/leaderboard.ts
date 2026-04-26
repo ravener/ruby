@@ -17,7 +17,8 @@ export class LeaderboardHandler extends InteractionHandler {
 
     public async run(interaction: StringSelectMenuInteraction, type: string) {
         const lb = type === 'money' ? await createMoneyLeaderboard(interaction.user) : await createXPLeaderboard(interaction.user);
-        
-        await interaction.message.edit(lb);
+
+        // await interaction.message.edit(lb);
+        await interaction.update(lb);
     }
 }
