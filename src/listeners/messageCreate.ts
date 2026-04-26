@@ -17,7 +17,7 @@ export class MessageListener extends Listener {
         if (timeouts.has(message.author.id)) return;
 
         const xp = Math.floor(Math.random() * 5) + 1;
-        
+
         const user = await prisma.user.upsert({
             where: { id: message.author.id },
             create: {
@@ -35,7 +35,12 @@ export class MessageListener extends Listener {
         if (level > user.level) {
             await prisma.user.update({
                 where: { id: user.id },
-                data: { level }
+                data: {
+                    level,
+                    money: {
+                        increment: 10
+                    }
+                }
             });
 
             await message.channel.send(`Congratulations! ${message.author} you leveled up to **Level ${level}**`);
