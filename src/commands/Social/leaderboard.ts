@@ -1,8 +1,13 @@
 import { createMoneyLeaderboard, createXPLeaderboard } from '#lib/leaderboards';
+import { ApplyOptions } from '@sapphire/decorators';
 import { ApplicationCommandRegistry, Args, Command, type Awaitable, type ChatInputCommand } from '@sapphire/framework';
 import { reply } from '@sapphire/plugin-editable-commands';
 import type { ChatInputCommandInteraction, Message } from 'discord.js';
 
+@ApplyOptions<Command.Options>({
+    description: 'View server leaderboard',
+    aliases: ['lb', 'top']
+})
 export class LeaderboardCommand extends Command {
     public async messageRun(message: Message, args: Args) {
         const type = await args.pick('string').catch(() => 'xp');

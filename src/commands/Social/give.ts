@@ -7,7 +7,8 @@ import type { Message } from 'discord.js';
 
 @ApplyOptions<Command.Options>({
     runIn: ['GUILD_TEXT'],
-    description: 'Give some one money'
+    description: 'Give some one money',
+    aliases: ['send', 'transfer']
 })
 export class GiveCommand extends Command {
     public async messageRun(message: Message, args: Args) {

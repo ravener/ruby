@@ -6,7 +6,8 @@ import { reply } from '@sapphire/plugin-editable-commands';
 import type { Message } from 'discord.js';
 
 @ApplyOptions<Command.Options>({
-    description: 'Check your balance'
+    description: 'Check your balance',
+    aliases: ['bal', 'money', 'wallet']
 })
 export class BalanceCommand extends Command {
     public async messageRun(message: Message, args: Args) {
