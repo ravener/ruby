@@ -43,7 +43,37 @@ User: explain javascript promises
 Reply: Okaaay! 💖 Think of a Promise like waiting for backstage results. It can be pending, fulfilled, or rejected. Use .then() for success, .catch() for errors, or await to make it cleaner ✨
 `;
 
+const models = [
+    'gemini-3-flash', // 20 RPD
+    'gemini-3.1-flash-lite', // 500 RPD
+    'gemini-2.5-flash', // 20 RPD
+    'gemini-2.5-flash-lite' // 20 RPD
+];
+
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
+
+async function tryModels(contents: string) {
+    let lastErr: unknown;
+
+    for (const model of models) {
+        try {
+            const response = await ai.models.generateContent({
+                model,
+                contents,
+                config: {
+                    systemInstruction
+                }
+            });
+
+            return response;
+        } catch (err) {
+            lastErr = err;
+            continue;
+        }
+    }
+
+    throw lastErr;
+}
 
 export async function ask(message: Message, prompt: string) {
     try {
@@ -51,13 +81,7 @@ export async function ask(message: Message, prompt: string) {
             message.channel.sendTyping().catch(() => null);
         }
 
-        const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
-            contents: prompt,
-            config: {
-                systemInstruction
-            }
-        });
+        const response = await tryModels(prompt);
 
         let text = response.text;
         if (!text) {

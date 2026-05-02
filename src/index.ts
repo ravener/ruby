@@ -1,6 +1,7 @@
+import 'dotenv/config';
+
 import { SapphireClient } from '@sapphire/framework';
 import { GatewayIntentBits } from 'discord.js';
-import 'dotenv/config';
 
 const client = new SapphireClient({
     intents: [
@@ -12,7 +13,7 @@ const client = new SapphireClient({
     ],
     loadMessageCommandListeners: true,
     defaultPrefix: '!',
-    regexPrefix: /^(?:(?:(?:hey|yo|ok),? )?ruby,? )/,
+    regexPrefix: /^(?:(?:(?:hey|yo|ok|hi|hello),? )?ruby,? )/,
     allowedMentions: {
         parse: ['users']
     }
