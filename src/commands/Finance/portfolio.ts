@@ -67,7 +67,7 @@ export class Portfolio extends Subcommand {
             where: { id: interaction.user.id }
         });
 
-        if (user?.money && user.money < cost) {
+        if (typeof user?.money !== 'undefined' && user.money < cost) {
             await interaction.reply(`You do not have enough balance to make this investment.\n${quantity} ${assetInfo.type === 'crypto' ? asset : 'shares'} would cost $${cost.toLocaleString()}, but you only have $${user.money.toLocaleString()}.`);
             return;
         }
