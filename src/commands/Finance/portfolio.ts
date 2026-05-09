@@ -276,7 +276,7 @@ export class Portfolio extends Subcommand {
                             .addStringOption((option) =>
                                 option
                                     .setName('amount')
-                                    .setDescription('The amount of money to invest (prefix with $ for spend mode otherwise it will be treated as quantity)')
+                                    .setDescription('The amount of money to invest')
                                     .setRequired(true)
                             )
                     )
@@ -293,7 +293,7 @@ export class Portfolio extends Subcommand {
                             .addStringOption((option) =>
                                 option
                                     .setName('amount')
-                                    .setDescription('The amount of the asset to sell (prefix with $ for spend mode otherwise it will be treated as quantity)')
+                                    .setDescription('The amount of the asset to sell')
                                     .setRequired(true)
                             )
                     )
