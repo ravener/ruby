@@ -223,8 +223,9 @@ export class Portfolio extends Subcommand {
 
                 return [
                     `${asset.name} (**${asset.symbol}**) (${calculatePercentage(investment.averagePrice.toNumber(), currentPrice)}%)`,
-                    `${investment.quantity.toFixed(8).replace(/\.?0+$/, '')} ${asset.type === 'crypto' ? asset.symbol : 'shares'} (**$${(investment.quantity.mul(currentPrice)).toNumber().toLocaleString()}**)`,
-                    `Average Price: $${investment.averagePrice.toLocaleString()}`,
+                    `${investment.quantity.toFixed(8).replace(/\.?0+$/, '')} ${asset.type === 'crypto' ? asset.symbol : 'shares'} (**$${(investment.quantity.mul(currentPrice)).toNumber().toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}**)`,
+                    `Average Price: **$${investment.averagePrice.toNumber().toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}**`,
+                    `Current Price: **$${currentPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}**`,
                 ].join('\n');
             });
 
