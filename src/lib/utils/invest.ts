@@ -155,6 +155,30 @@ export const ASSETS: Asset[] = [
         yahooSymbol: 'SPY'
     },
     {
+        name: 'Vanguard Total Stock Market ETF',
+        symbol: 'VTI',
+        type: 'stock',
+        yahooSymbol: 'VTI'
+    },
+    {
+        name: 'Vanguard Total World Stock ETF',
+        symbol: 'VT',
+        type: 'stock',
+        yahooSymbol: 'VT'
+    },
+    {
+        name: 'Vanguard Total International Stock ETF',
+        symbol: 'VXUS',
+        type: 'stock',
+        yahooSymbol: 'VXUS'
+    },
+    {
+        name: 'Vanguard S&P 500 ETF',
+        symbol: 'VOO',
+        type: 'stock',
+        yahooSymbol: 'VOO'
+    },
+    {
         name: 'QQQ',
         symbol: 'QQQ',
         type: 'stock',
