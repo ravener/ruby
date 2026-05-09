@@ -3,10 +3,10 @@ import { Colors } from '#lib/utils/constants';
 import { ASSETS, calculatePercentage, CurrentPrices } from '#lib/utils/invest';
 import { ApplyOptions } from '@sapphire/decorators';
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
-import type { ApplicationCommandRegistry } from '@sapphire/framework';
+import type { ApplicationCommandRegistry, Awaitable } from '@sapphire/framework';
 import { Subcommand } from '@sapphire/plugin-subcommands';
 import { chunk } from '@sapphire/utilities';
-import { EmbedBuilder, type ChatInputCommandInteraction } from 'discord.js';
+import { AutocompleteInteraction, EmbedBuilder, type ChatInputCommandInteraction } from 'discord.js';
 
 function parseInput(input: string) {
     input = input.trim();
@@ -236,6 +236,16 @@ export class Portfolio extends Subcommand {
         await paginatedMessage.run(interaction);
     }
 
+    async autocompleteRun(interaction: AutocompleteInteraction) {
+        const focusedOption = interaction.options.getFocused(true);
+
+        if (focusedOption.name === 'asset') {
+            const choices = ASSETS.map(asset => ({ name: `${asset.name} (${asset.symbol})`, value: asset.symbol }));
+            const filtered = choices.filter(choice => choice.name.toLowerCase().includes(focusedOption.value.toLowerCase()));
+            await interaction.respond(filtered.slice(0, 25));
+        }
+    }
+
     registerApplicationCommands(registry: ApplicationCommandRegistry) {
             registry.registerChatInputCommand((builder) => {
                 builder
@@ -250,9 +260,7 @@ export class Portfolio extends Subcommand {
                                     .setName('asset')
                                     .setDescription('The stock ticker or crypto symbol to invest in')
                                     .setRequired(true)
-                                    .addChoices(
-                                        ...ASSETS.map(asset => ({ name: `${asset.name} (${asset.symbol})`, value: asset.symbol }))
-                                    )
+                                    .setAutocomplete(true)
                             )
                             .addStringOption((option) =>
                                 option
@@ -270,9 +278,7 @@ export class Portfolio extends Subcommand {
                                     .setName('asset')
                                     .setDescription('The stock ticker or crypto symbol to sell')
                                     .setRequired(true)
-                                    .addChoices(
-                                        ...ASSETS.map(asset => ({ name: `${asset.name} (${asset.symbol})`, value: asset.symbol }))
-                                    )
+                                    .setAutocomplete(true)
                             )
                             .addStringOption((option) =>
                                 option
