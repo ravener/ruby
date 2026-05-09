@@ -180,7 +180,13 @@ export const ASSETS: Asset[] = [
     }
 ];
 
-export async function cachePrices() {
+function isWeekendInNewYork(date = new Date()) {
+    const nyDate = new Date(date.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+    const day = nyDate.getDay();
+    return day === 0 || day === 6; // Sunday = 0, Saturday = 6
+}
+
+export async function cachePrices(firstRun = false) {
     const cryptos = ASSETS.filter(asset => asset.type === 'crypto');
     const prices = await fetchCryptoPrices(...cryptos.map(asset => asset.coingeckoId!));
 
@@ -191,6 +197,7 @@ export async function cachePrices() {
         }
     }
 
+    if (!firstRun && isWeekendInNewYork()) return;
     const stocks = ASSETS.filter(asset => asset.type === 'stock' || asset.type === 'commodity');
     const quotes = await yahoo.quote(stocks.map(asset => asset.yahooSymbol!));
     for (const quote of quotes) {
