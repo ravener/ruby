@@ -270,6 +270,9 @@ export class Portfolio extends Subcommand {
                                     .setName('asset')
                                     .setDescription('The stock ticker or crypto symbol to sell')
                                     .setRequired(true)
+                                    .addChoices(
+                                        ...ASSETS.map(asset => ({ name: `${asset.name} (${asset.symbol})`, value: asset.symbol }))
+                                    )
                             )
                             .addStringOption((option) =>
                                 option
