@@ -68,7 +68,7 @@ export class Portfolio extends Subcommand {
         });
 
         if (user?.money && user.money < cost) {
-            await interaction.reply('You do not have enough balance to make this investment.');
+            await interaction.reply(`You do not have enough balance to make this investment.\n${quantity} ${assetInfo.type === 'crypto' ? asset : 'shares'} would cost $${cost.toLocaleString()}, but you only have $${user.money.toLocaleString()}.`);
             return;
         }
 
@@ -165,7 +165,7 @@ export class Portfolio extends Subcommand {
             }
         });
         if (!existingInvestment || existingInvestment.quantity.lt(quantityToSell)) {
-            await interaction.reply('You do not have enough of that asset to sell.');
+            await interaction.reply(`You do not have enough of that asset to sell. You are trying to sell ${quantityToSell.toLocaleString()} ${assetInfo.type === 'crypto' ? asset : 'shares'}, but you only have ${existingInvestment ? existingInvestment.quantity.toLocaleString() : 0} ${assetInfo.type === 'crypto' ? asset : 'shares'}.`);
             return;
         }
         
