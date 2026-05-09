@@ -53,11 +53,6 @@ export class Portfolio extends Subcommand {
             await interaction.reply('Unknown asset. Please choose a valid stock or cryptocurrency.');
             return;
         }
-        
-        if (assetInfo.type !== 'crypto') {
-            await interaction.reply('Only cryptos are supported for now.');
-            return;
-        }
 
         const currentPrice = CurrentPrices.get(asset);
         if (!currentPrice) {
@@ -256,22 +251,7 @@ export class Portfolio extends Subcommand {
                                     .setDescription('The stock ticker or crypto symbol to invest in')
                                     .setRequired(true)
                                     .addChoices(
-                                        { name: 'Bitcoin (BTC)', value: 'BTC' },
-                                        { name: 'Ethereum (ETH)', value: 'ETH' },
-                                        { name: 'Solana (SOL)', value: 'SOL' },
-                                        { name: 'Binance Coin (BNB)', value: 'BNB' },
-                                        { name: 'Ripple (XRP)', value: 'XRP' },
-                                        { name: 'Litecoin (LTC)', value: 'LTC' },
-                                        { name: 'Dogecoin (DOGE)', value: 'DOGE' },
-                                        { name: 'Cardano (ADA)', value: 'ADA' },
-                                        { name: 'Apple (AAPL)', value: 'AAPL' },
-                                        { name: 'Tesla (TSLA)', value: 'TSLA' },
-                                        { name: 'Amazon (AMZN)', value: 'AMZN' },
-                                        { name: 'SPY (SPY)', value: 'SPY' },
-                                        { name: 'QQQ (QQQ)', value: 'QQQ' },
-                                        { name: 'Gold (XAU)', value: 'XAU' },
-                                        { name: 'Silver (XAG)', value: 'XAG' },
-                                        { name: 'Oil (OIL)', value: 'OIL' }
+                                        ...ASSETS.map(asset => ({ name: `${asset.name} (${asset.symbol})`, value: asset.symbol }))
                                     )
                             )
                             .addStringOption((option) =>

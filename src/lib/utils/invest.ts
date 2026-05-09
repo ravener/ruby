@@ -1,3 +1,6 @@
+import YahooFinance from 'yahoo-finance2';
+
+const yahoo = new YahooFinance();
 
 export const CurrentPrices = new Map<string, number>();
 
@@ -21,6 +24,7 @@ export interface Asset {
     symbol: string;
     type: 'crypto' | 'stock' | 'commodity';
     coingeckoId?: string;
+    yahooSymbol?: string;
 }
 
 export const ASSETS: Asset[] = [
@@ -75,42 +79,104 @@ export const ASSETS: Asset[] = [
     {
         name: 'Apple',
         symbol: 'AAPL',
-        type: 'stock'
+        type: 'stock',
+        yahooSymbol: 'AAPL'
     },
     {
         name: 'Tesla',
         symbol: 'TSLA',
-        type: 'stock'
+        type: 'stock',
+        yahooSymbol: 'TSLA'
     },
     {
         name: 'Amazon',
         symbol: 'AMZN',
-        type: 'stock'
+        type: 'stock',
+        yahooSymbol: 'AMZN'
+    },
+    {
+        name: 'Cloudflare',
+        symbol: 'NET',
+        type: 'stock',
+        yahooSymbol: 'NET'
+    },
+    {
+        name: 'Dell',
+        symbol: 'DELL',
+        type: 'stock',
+        yahooSymbol: 'DELL'
+    },
+    {
+        name: 'Microsoft',
+        symbol: 'MSFT',
+        type: 'stock',
+        yahooSymbol: 'MSFT'
+    },
+    {
+        name: 'NVIDIA',
+        symbol: 'NVDA',
+        type: 'stock',
+        yahooSymbol: 'NVDA'
+    },
+    {
+        name: 'Meta',
+        symbol: 'META',
+        type: 'stock',
+        yahooSymbol: 'META'
+    },
+    {
+        name: 'Google',
+        symbol: 'GOOGL',
+        type: 'stock',
+        yahooSymbol: 'GOOGL'
+    },
+    {
+        name: 'Netflix',
+        symbol: 'NFLX',
+        type: 'stock',
+        yahooSymbol: 'NFLX'
+    },
+    {
+        name: 'Intel',
+        symbol: 'INTC',
+        type: 'stock',
+        yahooSymbol: 'INTC'
+    },
+    {
+        name: 'AMD',
+        symbol: 'AMD',
+        type: 'stock',
+        yahooSymbol: 'AMD'
     },
     {
         name: 'SPY',
         symbol: 'SPY',
-        type: 'stock'
+        type: 'stock',
+        yahooSymbol: 'SPY'
     },
     {
         name: 'QQQ',
         symbol: 'QQQ',
-        type: 'stock'
+        type: 'stock',
+        yahooSymbol: 'QQQ'
     },
     {
         name: 'Gold',
         symbol: 'XAU',
-        type: 'commodity'
+        type: 'commodity',
+        yahooSymbol: 'GC=F'
     },
     {
         name: 'Silver',
         symbol: 'XAG',
-        type: 'commodity'
+        type: 'commodity',
+        yahooSymbol: 'SI=F'
     },
     {
         name: 'Oil',
         symbol: 'OIL',
-        type: 'commodity'
+        type: 'commodity',
+        yahooSymbol: 'CL=F'
     }
 ];
 
@@ -122,6 +188,15 @@ export async function cachePrices() {
         const symbol = cryptos.find(asset => asset.coingeckoId === key)?.symbol;
         if (symbol) {
             CurrentPrices.set(symbol, value.usd);
+        }
+    }
+
+    const stocks = ASSETS.filter(asset => asset.type === 'stock' || asset.type === 'commodity');
+    const quotes = await yahoo.quote(stocks.map(asset => asset.yahooSymbol!));
+    for (const quote of quotes) {
+        const symbol = stocks.find(asset => asset.yahooSymbol === quote.symbol)?.symbol;
+        if (symbol) {
+            CurrentPrices.set(symbol, quote.regularMarketPrice);
         }
     }
 }
