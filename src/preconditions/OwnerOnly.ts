@@ -1,4 +1,4 @@
-import { OwnerId } from '#lib/constants';
+import { OwnerId } from '#lib/utils/constants';
 import { Precondition } from '@sapphire/framework';
 import type { ChatInputCommandInteraction, ContextMenuCommandInteraction, Message } from 'discord.js';
 

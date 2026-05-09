@@ -13,10 +13,21 @@ datasource db {
 }
 
 model User {
-  id        String  @id
-  osuId     String?
-  money     Int     @default(0)
-  xp        Int     @default(0)
-  level     Int     @default(0)
-  lastDaily Int     @default(0)
+  id          String       @id
+  osuId       String?
+  money       Int          @default(0)
+  xp          Int          @default(0)
+  level       Int          @default(0)
+  lastDaily   Int          @default(0)
+  investments Investment[]
+}
+
+model Investment {
+  userId       String
+  symbol       String
+  quantity     Decimal
+  averagePrice Decimal
+  user         User    @relation(fields: [userId], references: [id])
+
+  @@id([userId, symbol])
 }
