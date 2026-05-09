@@ -11,13 +11,14 @@ import { AutocompleteInteraction, EmbedBuilder, type ChatInputCommandInteraction
 function parseInput(input: string) {
     input = input.trim();
 
+    if (input.toLowerCase() === 'all') {
+        return { isAll: true, isSpend: false, value: 0 };
+    }
+
     const isSpend = input.startsWith('$');
+    const value = isSpend ? parseFloat(input.slice(1)) : parseFloat(input);
 
-    const value = isSpend
-        ? parseFloat(input.slice(1))
-        : parseFloat(input);
-
-    return { isSpend, value };
+    return { isAll: false, isSpend, value };
 }
 
 @ApplyOptions<Subcommand.Options>({
@@ -135,27 +136,25 @@ export class Portfolio extends Subcommand {
     public async sellRun(interaction: ChatInputCommandInteraction) {
         const asset = interaction.options.getString('asset', true);
         const amount = interaction.options.getString('amount', true);
-        
-        const { isSpend, value } = parseInput(amount);
-        if (isNaN(value) || value <= 0) {
+
+        const parsed = parseInput(amount);
+        if (!parsed.isAll && (isNaN(parsed.value) || parsed.value <= 0)) {
             await interaction.reply('Please enter a valid amount to sell.');
             return;
         }
-        
+
         const assetInfo = ASSETS.find(a => a.symbol === asset);
         if (!assetInfo) {
             await interaction.reply('Unknown asset. Please choose a valid stock or cryptocurrency.');
             return;
         }
-        
+
         const currentPrice = CurrentPrices.get(asset);
         if (!currentPrice) {
             await interaction.reply('Current price for that asset is unavailable. Please try again later.');
             return;
         }
-        
-        const quantityToSell = isSpend ? value / currentPrice : value;
-        
+
         const existingInvestment = await prisma.investment.findUnique({
             where: {
                 userId_symbol: {
@@ -164,13 +163,31 @@ export class Portfolio extends Subcommand {
                 }
             }
         });
-        if (!existingInvestment || existingInvestment.quantity.lt(quantityToSell)) {
-            await interaction.reply(`You do not have enough of that asset to sell. You are trying to sell ${quantityToSell.toLocaleString()} ${assetInfo.type === 'crypto' ? asset : 'shares'}, but you only have ${existingInvestment ? existingInvestment.quantity.toLocaleString() : 0} ${assetInfo.type === 'crypto' ? asset : 'shares'}.`);
+
+        if (!existingInvestment || existingInvestment.quantity.lte(0)) {
+            await interaction.reply(`You do not own any ${assetInfo.type === 'crypto' ? asset : `shares of ${assetInfo.name}`}.`);
             return;
         }
-        
+
+        const ownedQuantity = existingInvestment.quantity.toNumber();
+        let quantityToSell: number;
+
+        if (parsed.isAll) {
+            quantityToSell = ownedQuantity;
+        } else {
+            quantityToSell = parsed.isSpend ? parsed.value / currentPrice : parsed.value;
+            // Clamp to owned quantity to handle floating point precision
+            if (quantityToSell > ownedQuantity) {
+                if (quantityToSell - ownedQuantity > ownedQuantity * 1e-9) {
+                    await interaction.reply(`You do not have enough of that asset to sell. You are trying to sell ${quantityToSell.toLocaleString()} ${assetInfo.type === 'crypto' ? asset : 'shares'}, but you only have ${ownedQuantity.toLocaleString()} ${assetInfo.type === 'crypto' ? asset : 'shares'}.`);
+                    return;
+                }
+                quantityToSell = ownedQuantity;
+            }
+        }
+
         const revenue = quantityToSell * currentPrice;
-        
+
         await prisma.$transaction([
             prisma.user.update({
                 where: { id: interaction.user.id },
@@ -192,14 +209,15 @@ export class Portfolio extends Subcommand {
                 }
             })
         ]);
-        
+
         await interaction.reply(`Successfully sold ${quantityToSell.toLocaleString()} ${assetInfo.type === 'crypto' ? asset : 'shares'} of ${assetInfo.name} for $${revenue.toLocaleString()}!`);
     }
 
     public async viewRun(interaction: ChatInputCommandInteraction) {
         const investments = await prisma.investment.findMany({
             where: {
-                userId: interaction.user.id
+                userId: interaction.user.id,
+                quantity: { gt: 0 }
             }
         });
 
@@ -283,7 +301,7 @@ export class Portfolio extends Subcommand {
                             .addStringOption((option) =>
                                 option
                                     .setName('amount')
-                                    .setDescription('The amount of the asset to sell')
+                                    .setDescription('The amount of the asset to sell (or "all")')
                                     .setRequired(true)
                             )
                     )
