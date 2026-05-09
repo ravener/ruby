@@ -223,9 +223,9 @@ export class Portfolio extends Subcommand {
 
                 return [
                     `${asset.name} (**${asset.symbol}**) (${calculatePercentage(investment.averagePrice.toNumber(), currentPrice)}%)`,
-                    `${investment.quantity} ${asset.type === 'crypto' ? asset.symbol : 'shares'} (**$${(investment.quantity.mul(currentPrice)).toLocaleString()}**)`,
+                    `${investment.quantity.toFixed(8).replace(/\.?0+$/, '')} ${asset.type === 'crypto' ? asset.symbol : 'shares'} (**$${(investment.quantity.mul(currentPrice)).toNumber().toLocaleString()}**)`,
                     `Average Price: $${investment.averagePrice.toLocaleString()}`,
-                ]
+                ].join('\n');
             });
 
             const embed = new EmbedBuilder()
