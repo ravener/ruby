@@ -149,6 +149,18 @@ export const ASSETS: Asset[] = [
         yahooSymbol: 'AMD'
     },
     {
+        name: 'Micron Technology',
+        symbol: 'MU',
+        type: 'stock',
+        yahooSymbol: 'MU'
+    },
+    {
+        name: 'Strategy',
+        symbol: 'MSTR',
+        type: 'stock',
+        yahooSymbol: 'MSTR'
+    },
+    {
         name: 'SPY',
         symbol: 'SPY',
         type: 'stock',
@@ -223,7 +235,7 @@ export async function cachePrices(firstRun = false) {
 
     if (!firstRun && isWeekendInNewYork()) return;
     const stocks = ASSETS.filter(asset => asset.type === 'stock' || asset.type === 'commodity');
-    const quotes = await yahoo.quote(stocks.map(asset => asset.yahooSymbol!));
+    const quotes = await yahoo.quote(stocks.map(asset => asset.yahooSymbol!), { fields: ['regularMarketPrice'] });
     for (const quote of quotes) {
         const symbol = stocks.find(asset => asset.yahooSymbol === quote.symbol)?.symbol;
         if (symbol) {
