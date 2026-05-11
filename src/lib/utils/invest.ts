@@ -235,7 +235,7 @@ export async function cachePrices(firstRun = false) {
 
     if (!firstRun && isWeekendInNewYork()) return;
     const stocks = ASSETS.filter(asset => asset.type === 'stock' || asset.type === 'commodity');
-    const quotes = await yahoo.quote(stocks.map(asset => asset.yahooSymbol!), { fields: ['regularMarketPrice'] });
+    const quotes = await yahoo.quote(stocks.map(asset => asset.yahooSymbol!));
     for (const quote of quotes) {
         const symbol = stocks.find(asset => asset.yahooSymbol === quote.symbol)?.symbol;
         if (symbol) {
