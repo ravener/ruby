@@ -161,6 +161,12 @@ export const ASSETS: Asset[] = [
         yahooSymbol: 'MSTR'
     },
     {
+        name: 'Virgin Galactic Holdings',
+        symbol: 'SPCE',
+        type: 'stock',
+        yahooSymbol: 'SPCE'
+    },
+    {
         name: 'SPY',
         symbol: 'SPY',
         type: 'stock',
@@ -247,4 +253,12 @@ export async function cachePrices(firstRun = false) {
 export function calculatePercentage(averagePrice: number, currentPrice: number) {
     const raw = (currentPrice - averagePrice) / averagePrice * 100;
     return Math.round(raw * 100) / 100; // Round to 2 decimal places
+}
+
+export async function searchQuotes(query: string) {
+    const results = await yahoo.search(query);
+    return results.quotes.map(quote => ({
+        name: quote.longname || quote.shortname || quote.symbol,
+        value: quote.symbol,
+    }));
 }
