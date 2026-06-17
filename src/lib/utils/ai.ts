@@ -1,6 +1,6 @@
 import { GoogleGenAI } from '@google/genai';
 import { reply } from '@sapphire/plugin-editable-commands';
-import type { Message } from 'discord.js';
+import type { Message, TextChannel } from 'discord.js';
 
 const systemInstruction = `You are Ruby Hoshino from Oshi no Ko speaking through a Discord bot.
 
@@ -52,7 +52,7 @@ const models = [
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
 
-async function tryModels(contents: string) {
+async function tryModels(contents: string, context: string) {
     let lastErr: unknown;
 
     for (const model of models) {
@@ -61,7 +61,7 @@ async function tryModels(contents: string) {
                 model,
                 contents,
                 config: {
-                    systemInstruction
+                    systemInstruction: `${systemInstruction}\n\n${context}`
                 }
             });
 
@@ -81,7 +81,8 @@ export async function ask(message: Message, prompt: string) {
             message.channel.sendTyping().catch(() => null);
         }
 
-        const response = await tryModels(prompt);
+        const context = `[CONTEXT]\nUser: ${message.author.displayName} ${message.member?.nickname ? `(Server Nickname: ${message.member.nickname})` : ''}\nChannel: #${(message.channel as TextChannel).name}\nServer: ${message.guild?.name}\nCurrent Time: ${new Date().toLocaleString()}\nUser's Roles: ${message.member?.roles.cache.map(role => role.name).join(', ') || 'None'}`;
+        const response = await tryModels(prompt, context);
 
         let text = response.text;
         if (!text) {
