@@ -81,7 +81,7 @@ export async function ask(message: Message, prompt: string) {
             message.channel.sendTyping().catch(() => null);
         }
 
-        const context = `[CONTEXT]\nUser: ${message.author.displayName} ${message.member?.nickname ? `(Server Nickname: ${message.member.nickname})` : ''}\nChannel: #${(message.channel as TextChannel).name}\nServer: ${message.guild?.name}\nCurrent Time: ${new Date().toLocaleString()}\nUser's Roles: ${message.member?.roles.cache.map(role => role.name).join(', ') || 'None'}`;
+        const context = `[CONTEXT]\nUser: ${message.author.displayName} ${message.member?.nickname ? `(Server Nickname: ${message.member.nickname ?? 'None'})` : ''}\nChannel: #${(message.channel as TextChannel).name}\nServer: ${message.guild?.name}\nCurrent Time: ${new Date().toLocaleString()}\nUser's Roles: ${message.member?.roles.cache.map(role => role.name).join(', ') || 'None'}`;
         const response = await tryModels(prompt, context);
 
         let text = response.text;
