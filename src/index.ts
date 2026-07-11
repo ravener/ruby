@@ -13,7 +13,7 @@ const client = new SapphireClient({
     ],
     loadMessageCommandListeners: true,
     defaultPrefix: '!',
-    regexPrefix: /^(?:(?:(?:hey|yo|ok|hi|hello),? )?ruby,? )/,
+    regexPrefix: /^(?:(?:(?:hey|yo|ok|hi|hello),? )?ruby,? )/i,
     allowedMentions: {
         parse: ['users']
     }
