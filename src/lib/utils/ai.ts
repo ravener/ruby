@@ -94,7 +94,7 @@ export async function ask(message: Message, prompt: string) {
             text = text.slice(0, 1997) + '...';
         }
 
-        await reply(message, `${text}\n\n-# Model: \`${response.modelVersion}\``);
+        await reply(message, text);
     } catch (err) {
         await reply(message, `Something went wrong with Gemini API: \`${err}\``);
     }
