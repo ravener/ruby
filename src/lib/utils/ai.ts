@@ -1,4 +1,4 @@
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenAI, ThinkingLevel } from '@google/genai';
 import { reply } from '@sapphire/plugin-editable-commands';
 import type { Message, TextChannel } from 'discord.js';
 
@@ -55,6 +55,15 @@ const models = [
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
 
+function getThinkingConfig(modelName: string, preferSpeed = false) {
+    if (modelName.includes('gemini-3')) {
+        return { thinkingLevel: preferSpeed ? ThinkingLevel.LOW : ThinkingLevel.HIGH }; 
+    } 
+
+    // Older models do not support thinkingLevel, keep the defaults.
+    return undefined;
+}
+
 async function tryModels(contents: string, context: string) {
     let lastErr: unknown;
 
@@ -64,7 +73,8 @@ async function tryModels(contents: string, context: string) {
                 model,
                 contents,
                 config: {
-                    systemInstruction: `${systemInstruction}\n\n${context}`
+                    systemInstruction: `${systemInstruction}\n\n${context}`,
+                    thinkingConfig: getThinkingConfig(model, true)!
                 }
             });
 
