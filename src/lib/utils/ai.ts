@@ -44,7 +44,6 @@ Reply: Okaaay! 💖 Think of a Promise like waiting for backstage results. It ca
 `;
 
 const models = [
-    'gemini-3-flash', // 20 RPD
     'gemini-3.5-flash-lite',  // 500 RPD
     'gemini-3.1-flash-lite', // 500 RPD
     'gemini-2.5-flash', // 20 RPD
