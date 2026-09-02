@@ -44,9 +44,6 @@ Reply: Okaaay! 💖 Think of a Promise like waiting for backstage results. It ca
 `;
 
 const models = [
-    'gemini-3.7-flash', // 20 RPD
-    'gemini-3.6-flash', // 20 RPD
-    'gemini-3.5-flash', // 20 RPD
     'gemini-3-flash', // 20 RPD
     'gemini-3.1-flash-lite', // 500 RPD
     'gemini-2.5-flash', // 20 RPD
@@ -54,15 +51,6 @@ const models = [
 ];
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
-
-function getThinkingConfig(modelName: string, preferSpeed = false) {
-    if (modelName.includes('gemini-3')) {
-        return { thinkingLevel: preferSpeed ? ThinkingLevel.LOW : ThinkingLevel.HIGH }; 
-    } 
-
-    // Older models do not support thinkingLevel, keep the defaults.
-    return undefined;
-}
 
 async function tryModels(contents: string, context: string) {
     let lastErr: unknown;
@@ -73,8 +61,7 @@ async function tryModels(contents: string, context: string) {
                 model,
                 contents,
                 config: {
-                    systemInstruction: `${systemInstruction}\n\n${context}`,
-                    thinkingConfig: getThinkingConfig(model, true)!
+                    systemInstruction: `${systemInstruction}\n\n${context}`
                 }
             });
 
