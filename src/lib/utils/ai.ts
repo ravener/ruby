@@ -1,4 +1,4 @@
-import { GoogleGenAI, ThinkingLevel } from '@google/genai';
+import { GoogleGenAI } from '@google/genai';
 import { reply } from '@sapphire/plugin-editable-commands';
 import type { Message, TextChannel } from 'discord.js';
 
