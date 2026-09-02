@@ -95,9 +95,9 @@ export async function ask(message: Message, prompt: string) {
 
         if (text.length >= 2000) {
             text = text.slice(0, 1997) + '...';
-        } 
+        }
 
-        await reply(message, text);
+        await reply(message, `${text}\n\n-# Model: \`${response.modelVersion}\``);
     } catch (err) {
         await reply(message, `Something went wrong with Gemini API: \`${err}\``);
     }
